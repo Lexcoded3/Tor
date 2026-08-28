@@ -36,8 +36,28 @@ function boxBot(w) {
 function boxLine(w, text) {
   const inner = w - 4;
   const visible = stripAnsi(text).length;
-  const pad = Math.max(0, inner - visible);
-  return '  ' + clc.white('│ ') + text + ' '.repeat(pad) + clc.white(' │');
+  if (visible <= inner) {
+    const pad = Math.max(0, inner - visible);
+    return '  ' + clc.white('│ ') + text + ' '.repeat(pad) + clc.white(' │');
+  }
+  // Truncate long text
+  const truncated = text.slice(0, inner - 2) + '..';
+  return '  ' + clc.white('│ ') + truncated + clc.white(' │');
+}
+
+function boxLines(w, text) {
+  // Split text by newlines and return an array of boxLine strings
+  const inner = w - 4;
+  return text.split('\n').filter((l) => l.trim() !== '').map((line) => {
+    const trimmed = line.trim();
+    const visible = stripAnsi(trimmed).length;
+    if (visible <= inner) {
+      const pad = Math.max(0, inner - visible);
+      return '  ' + clc.white('│ ') + trimmed + ' '.repeat(pad) + clc.white(' │');
+    }
+    const truncated = trimmed.slice(0, inner - 2) + '..';
+    return '  ' + clc.white('│ ') + truncated + clc.white(' │');
+  });
 }
 
 function boxSep(w) {
@@ -236,14 +256,17 @@ function startTor() {
       console.log(boxBot(w));
       fetchExitIp(() => showMenu());
     } else {
-      if (msg.indexOf('[notice]') !== -1 || msg.indexOf('[warn]') !== -1) {
-        console.log(boxLine(w, '  ' + clc.blackBright(msg.trim())));
+      if (msg.indexOf('[notice]') !== -1 || msg.indexOf('[warn]') !== -1 || msg.indexOf('[err]') !== -1) {
+        // Split multi-line output into individual box lines
+        const lines = boxLines(w, '  ' + clc.blackBright(msg.trim()));
+        lines.forEach((line) => console.log(line));
       }
     }
   });
 
   torProcess.stderr.on('data', (data) => {
-    console.log(boxLine(w, '  ' + clc.redBright(data.toString().trim())));
+    const lines = boxLines(w, '  ' + clc.redBright(data.toString().trim()));
+    lines.forEach((line) => console.log(line));
   });
 }
 
