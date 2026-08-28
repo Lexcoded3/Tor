@@ -130,15 +130,16 @@ function showMenu() {
   console.log(divider());
 
   const items = [
-    { key: '1', label: 'Start TOR connection',  color: clc.greenBright,   icon: '▶' },
-    { key: '2', label: 'Log connection info',    color: clc.blueBright,    icon: '📋' },
-    { key: '3', label: 'Stop TOR connection',    color: clc.redBright,     icon: '■' },
-    { key: '4', label: 'Debug TOR connection',   color: clc.yellowBright,  icon: '🔍' },
-    { key: '5', label: 'New TOR identity',       color: clc.magentaBright, icon: '↻' },
-    { key: '6', label: 'Restart TOR connection', color: clc.blueBright,    icon: '↻' },
-    { key: '7', label: 'Show exit IP',           color: clc.cyanBright,    icon: '🌍' },
-    { key: '8', label: 'Show circuit path',      color: clc.cyanBright,    icon: '◈' },
-    { key: '9', label: 'Network stats',          color: clc.yellowBright,  icon: '📊' },
+    { key: '1', label: 'Start TOR connection',  color: clc.greenBright,   icon: '>' },
+    { key: '2', label: 'Log connection info',    color: clc.blueBright,    icon: '*' },
+    { key: '3', label: 'Stop TOR connection',    color: clc.redBright,     icon: '>' },
+    { key: '4', label: 'Debug TOR connection',   color: clc.yellowBright,  icon: '*' },
+    { key: '5', label: 'New TOR identity',       color: clc.magentaBright, icon: '>' },
+    { key: '6', label: 'Restart TOR connection', color: clc.blueBright,    icon: '>' },
+    { key: '7', label: 'Show exit IP',           color: clc.cyanBright,    icon: '*' },
+    { key: '8', label: 'Show circuit path',      color: clc.cyanBright,    icon: '*' },
+    { key: '9', label: 'Network stats',          color: clc.yellowBright,  icon: '*' },
+    { key: '0', label: 'Live dashboard',         color: clc.cyanBright,    icon: '*' },
   ];
 
   items.forEach((item) => {
@@ -149,7 +150,7 @@ function showMenu() {
   });
 
   console.log(divider());
-  console.log(row('  ' + clc.blackBright(' Press a key (1-9) or ' + clc.white.bold('Q') + ' to quit')));
+  console.log(row('  ' + clc.blackBright(' Press a key (1-9, 0) or ' + clc.white.bold('Q') + ' to quit')));
   console.log(bottomBorder());
   blank();
 }
@@ -211,7 +212,7 @@ function httpGetThroughSocks(host, path, callback) {
 function startTor() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.greenBright.bold('▶  S T A R T   T O R')));
+  console.log(rowCenter(clc.greenBright.bold('S T A R T   T O R')));
   console.log(divider());
 
   if (torProcess) {
@@ -254,7 +255,7 @@ function startTor() {
 function stopTor() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.redBright.bold('■  S T O P   T O R')));
+  console.log(rowCenter(clc.redBright.bold('S T O P   T O R')));
   console.log(divider());
   if (!torProcess) {
     console.log(row('  ' + clc.yellow('No running Tor process found.')));
@@ -271,7 +272,7 @@ function stopTor() {
 function restartTor() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.blueBright.bold('↻  R E S T A R T')));
+  console.log(rowCenter(clc.blueBright.bold('R E S T A R T')));
   console.log(divider());
   if (torProcess) {
     torControl('halt', () => {
@@ -287,7 +288,7 @@ function restartTor() {
 function logInfo() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.blueBright.bold('📋  L O G   I N F O R M A T I O N')));
+  console.log(rowCenter(clc.blueBright.bold('L O G   I N F O R M A T I O N')));
   console.log(divider());
   torControl('dump', () => showMenu());
 }
@@ -295,7 +296,7 @@ function logInfo() {
 function debugInfo() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.yellowBright.bold('🔍  D E B U G')));
+  console.log(rowCenter(clc.yellowBright.bold('D E B U G')));
   console.log(divider());
   torControl('debug', () => showMenu());
 }
@@ -303,7 +304,7 @@ function debugInfo() {
 function newIdentity() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.magentaBright.bold('↻  N E W   I D E N T I T Y')));
+  console.log(rowCenter(clc.magentaBright.bold('N E W   I D E N T I T Y')));
   console.log(divider());
   torControl('newnym', () => showMenu());
 }
@@ -329,7 +330,7 @@ function fetchExitIp(callback) {
 function showExitIp() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.cyanBright.bold('🌍  E X I T   I P')));
+  console.log(rowCenter(clc.cyanBright.bold('E X I T   I P')));
   console.log(divider());
   if (!torProcess) {
     console.log(row('  ' + clc.yellow('Tor is not running. Start it first.')));
@@ -345,7 +346,7 @@ function showExitIp() {
 function showCircuitPath() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.cyanBright.bold('◈  C I R C U I T   P A T H')));
+  console.log(rowCenter(clc.cyanBright.bold('C I R C U I T   P A T H')));
   console.log(divider());
   if (!torProcess) {
     console.log(row('  ' + clc.yellow('Tor is not running. Start it first.')));
@@ -401,6 +402,7 @@ const actions = {
   '7': showExitIp,
   '8': showCircuitPath,
   '9': showNetworkStats,
+  '0': liveDashboard,
 };
 
 function formatBytes(bytes) {
@@ -427,7 +429,7 @@ function formatUptime(seconds) {
 function showNetworkStats() {
   blank();
   console.log(topBorder());
-  console.log(rowCenter(clc.yellowBright.bold('📊  N E T W O R K   S T A T S')));
+  console.log(rowCenter(clc.yellowBright.bold('N E T W O R K   S T A T S')));
   console.log(divider());
   if (!torProcess) {
     console.log(row('  ' + clc.yellow('Tor is not running. Start it first.')));
@@ -471,43 +473,43 @@ function showNetworkStats() {
 
     // Uptime
     const uptime = info['status/client/uptime'];
-    console.log(row('  ' + clc.white.bold('⏱  Uptime:              ') + clc.cyanBright(formatUptime(parseInt(uptime, 10)))));
+    console.log(row('  ' + clc.white.bold('Uptime:') + clc.cyanBright(formatUptime(parseInt(uptime, 10)))));
 
     // Bandwidth
     const bwRate = info['bandwidth-rate'];
     const bwBurst = info['bandwidth-burst'];
-    console.log(row('  ' + clc.white.bold('📡  Bandwidth Rate:      ') + clc.cyanBright(formatBytes(parseInt(bwRate, 10)) + '/s')));
-    console.log(row('  ' + clc.white.bold('📡  Bandwidth Burst:     ') + clc.cyanBright(formatBytes(parseInt(bwBurst, 10)) + '/s')));
+    console.log(row('  ' + clc.white.bold('Bandwidth Rate:') + clc.cyanBright(formatBytes(parseInt(bwRate, 10)) + '/s')));
+    console.log(row('  ' + clc.white.bold('Bandwidth Burst:') + clc.cyanBright(formatBytes(parseInt(bwBurst, 10)) + '/s')));
 
     console.log(row(''));
 
     // Traffic
     const trafficRead = info['traffic/read'];
     const trafficWritten = info['traffic/written'];
-    console.log(row('  ' + clc.white.bold('📥  Data Downloaded:     ') + clc.greenBright(formatBytes(parseInt(trafficRead, 10)))));
-    console.log(row('  ' + clc.white.bold('📤  Data Uploaded:       ') + clc.greenBright(formatBytes(parseInt(trafficWritten, 10)))));
+    console.log(row('  ' + clc.white.bold('Data Downloaded:') + clc.greenBright(formatBytes(parseInt(trafficRead, 10)))));
+    console.log(row('  ' + clc.white.bold('Data Uploaded:') + clc.greenBright(formatBytes(parseInt(trafficWritten, 10)))));
 
     console.log(row(''));
 
     // Network liveness
     const liveness = info['network-liveness'];
     const livenessColor = liveness === 'up' ? clc.greenBright : clc.redBright;
-    console.log(row('  ' + clc.white.bold('🌐  Network:             ') + livenessColor(liveness === 'up' ? '● UP' : '○ DOWN')));
+    console.log(row('  ' + clc.white.bold('Network:') + livenessColor(liveness === 'up' ? '● UP' : '○ DOWN')));
 
     // OR connections count
     const orLines = info['_lines'] || [];
     const orCount = orLines.filter((l) => l.indexOf('orconn-status') !== -1 || (!l.includes('=') && l.trim() !== '' && !l.includes('circuit'))).length;
     if (orLines.length > 0) {
       console.log(row(''));
-      console.log(row('  ' + clc.white.bold('🔗  Active Circuits:     ') + clc.white(orLines.length)));
+      console.log(row('  ' + clc.white.bold('Active Circuits:') + clc.white(orLines.length)));
     }
 
     // Exit IP
     console.log(row(''));
     if (currentExitIp) {
-      console.log(row('  ' + clc.white.bold('🌍  Exit IP:             ') + clc.cyanBright(currentExitIp)));
+      console.log(row('  ' + clc.white.bold('Exit IP:') + clc.cyanBright(currentExitIp)));
     } else {
-      console.log(row('  ' + clc.white.bold('🌍  Exit IP:             ') + clc.blackBright('---')));
+      console.log(row('  ' + clc.white.bold('Exit IP:') + clc.blackBright('---')));
     }
 
     console.log(row(''));
@@ -516,7 +518,123 @@ function showNetworkStats() {
   });
 }
 
+let dashboardInterval = null;
+
+function stopDashboard() {
+  if (dashboardInterval) {
+    clearInterval(dashboardInterval);
+    dashboardInterval = null;
+  }
+}
+
+function renderDashboard() {
+  return new Promise((resolve) => {
+    if (!torProcess) {
+      console.log(row('  ' + clc.yellow('Tor is not running. Start it first.')));
+      console.log(bottomBorder());
+      return resolve();
+    }
+    const control = new TorControl();
+    const keys = [
+      'status/client/uptime',
+      'traffic/read',
+      'traffic/written',
+      'bandwidth-rate',
+      'bandwidth-burst',
+      'network-liveness',
+      'orconn-status',
+      'circuit-status',
+    ];
+    control.getInfo(keys, (err, result) => {
+      if (err) {
+        console.log(row('  ' + clc.redBright(`Error: ${err}`)));
+        console.log(bottomBorder());
+        return resolve();
+      }
+      const info = {};
+      result.messages.forEach((msg) => {
+        const idx = msg.indexOf('=');
+        if (idx !== -1) {
+          info[msg.substring(0, idx)] = msg.substring(idx + 1);
+        } else if (msg.trim() !== 'OK' && msg.trim() !== '') {
+          if (!info['_lines']) info['_lines'] = [];
+          info['_lines'].push(msg);
+        }
+      });
+
+      const now = new Date().toLocaleTimeString();
+      console.log(row('  ' + clc.blackBright(`Last updated: ${now}`)));
+      console.log(row(''));
+
+      const uptime = info['status/client/uptime'];
+      console.log(row('  ' + clc.white.bold('Uptime:           ') + clc.cyanBright(formatUptime(parseInt(uptime, 10)))));
+
+      const bwRate = info['bandwidth-rate'];
+      const bwBurst = info['bandwidth-burst'];
+      console.log(row('  ' + clc.white.bold('Bandwidth Rate:   ') + clc.cyanBright(formatBytes(parseInt(bwRate, 10)) + '/s')));
+      console.log(row('  ' + clc.white.bold('Bandwidth Burst:  ') + clc.cyanBright(formatBytes(parseInt(bwBurst, 10)) + '/s')));
+
+      console.log(row(''));
+
+      const trafficRead = info['traffic/read'];
+      const trafficWritten = info['traffic/written'];
+      console.log(row('  ' + clc.white.bold('Downloaded:       ') + clc.greenBright(formatBytes(parseInt(trafficRead, 10)))));
+      console.log(row('  ' + clc.white.bold('Uploaded:         ') + clc.greenBright(formatBytes(parseInt(trafficWritten, 10)))));
+
+      console.log(row(''));
+
+      const liveness = info['network-liveness'];
+      const livenessColor = liveness === 'up' ? clc.greenBright : clc.redBright;
+      console.log(row('  ' + clc.white.bold('Network:          ') + livenessColor(liveness === 'up' ? 'UP' : 'DOWN')));
+
+      const orLines = info['_lines'] || [];
+      if (orLines.length > 0) {
+        console.log(row('  ' + clc.white.bold('Active Circuits:  ') + clc.white(orLines.length)));
+      }
+
+      console.log(row(''));
+      if (currentExitIp) {
+        console.log(row('  ' + clc.white.bold('Exit IP:          ') + clc.cyanBright(currentExitIp)));
+      } else {
+        console.log(row('  ' + clc.white.bold('Exit IP:          ') + clc.blackBright('---')));
+      }
+
+      console.log(row(''));
+      console.log(bottomBorder());
+      resolve();
+    });
+  });
+}
+
+function liveDashboard() {
+  stopDashboard();
+  blank();
+  console.log(topBorder());
+  console.log(rowCenter(clc.cyanBright.bold('L I V E   D A S H B O R D')));
+  console.log(divider());
+  console.log(row('  ' + clc.blackBright('Refreshing every 3s... Press any key to stop.')));
+  console.log(bottomBorder());
+  blank();
+
+  renderDashboard();
+
+  dashboardInterval = setInterval(() => {
+    // Move cursor up to overwrite previous dashboard output
+    // We clear and redraw for simplicity
+    process.stdout.write('\x1b[2J\x1b[H');
+    showBanner();
+    console.log(topBorder());
+    console.log(rowCenter(clc.cyanBright.bold('L I V E   D A S H B O R D')));
+    console.log(divider());
+    console.log(row('  ' + clc.blackBright('Refreshing every 3s... Press any key to stop.')));
+    console.log(bottomBorder());
+    blank();
+    renderDashboard();
+  }, 3000);
+}
+
 function shutdown() {
+  stopDashboard();
   blank();
   console.log(topBorder());
   console.log(rowCenter(clc.redBright.bold('Q U I T T I N G')));
@@ -540,13 +658,20 @@ stdin.on('data', (e) => {
   const key = e.trim().toLowerCase();
   if (key === 'q') return shutdown();
 
+  // Stop dashboard on any key press
+  if (dashboardInterval) {
+    stopDashboard();
+    showMenu();
+    return;
+  }
+
   const action = actions[key];
   if (action) {
     action();
   } else if (key !== '') {
     blank();
     console.log(topBorder());
-    console.log(row('  ' + clc.redBright(`Invalid option: "${key}" — press 1-9 or Q to quit.`)));
+    console.log(row('  ' + clc.redBright(`Invalid option: "${key}" — press 1-9, 0 or Q to quit.`)));
     console.log(bottomBorder());
     blank();
     showMenu();
@@ -566,7 +691,7 @@ if (arg) {
     showBanner();
     console.log();
     console.log(topBorder());
-    console.log(row('  ' + clc.redBright(`Unknown command: "${arg}". Available: 1-9 or q`)));
+    console.log(row('  ' + clc.redBright(`Unknown command: "${arg}". Available: 1-9, 0 or q`)));
     console.log(bottomBorder());
   }
 } else {
