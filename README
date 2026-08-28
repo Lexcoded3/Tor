@@ -1,0 +1,2 @@
+vendor >> nodejs >> node-v14.16.1-win-x86: https://nodejs.org/dist/v14.16.1/node-v14.16.1-win-x86.zip
+vendor >> tor-bundle >> tor-win32-0.4.5.7: https://www.torproject.org/dist/torbrowser/10.0.15/tor-win32-0.4.5.7.zip

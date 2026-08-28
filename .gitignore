@@ -1,0 +1,7 @@
+# Vendor binaries and dependencies (distributable, not source)
+vendor/nodejs/node.exe
+vendor/nodejs/node_modules/
+vendor/tor-bundle/
+
+# Keep the torrc and run.bat in vendor if needed, but ignore binaries
+*.dll
