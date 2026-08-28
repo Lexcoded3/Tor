@@ -1,1 +1,6 @@
+## Tor Configuration
+SocksPort 9050
 ControlPort 9051
+
+## Logging
+Log notice stdout

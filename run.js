@@ -214,6 +214,12 @@ function startTor() {
   console.log(rowCenter(clc.greenBright.bold('▶  S T A R T   T O R')));
   console.log(divider());
 
+  if (torProcess) {
+    console.log(row('  ' + clc.yellow('Tor is already running. Stop it first (option 3).')));
+    sectionFooter();
+    return showMenu();
+  }
+
   torProcess = spawn('./vendor/tor-bundle/tor.exe', ['-f', 'torrc']);
 
   torProcess.on('exit', (code) => {
