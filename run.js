@@ -446,11 +446,9 @@ function renderStats(w) {
     }
     const control = new TorControl();
     const keys = [
-      'status/client/uptime',
+      'uptime',
       'traffic/read',
       'traffic/written',
-      'bandwidth-rate',
-      'bandwidth-burst',
       'network-liveness',
       'orconn-status',
       'circuit-status',
@@ -476,13 +474,10 @@ function renderStats(w) {
       console.log(boxLine(w, '  ' + clc.blackBright('Last updated: ' + now)));
       console.log(boxLine(w, ''));
 
-      const uptime = info['status/client/uptime'];
-      console.log(boxRow(w, 'Uptime', clc.cyanBright(formatUptime(parseInt(uptime, 10)))));
-
-      const bwRate = info['bandwidth-rate'];
-      const bwBurst = info['bandwidth-burst'];
-      console.log(boxRow(w, 'Bandwidth Rate', clc.cyanBright(formatBytes(parseInt(bwRate, 10)) + '/s')));
-      console.log(boxRow(w, 'Bandwidth Burst', clc.cyanBright(formatBytes(parseInt(bwBurst, 10)) + '/s')));
+      const uptime = info['uptime'];
+      if (uptime) {
+        console.log(boxRow(w, 'Uptime', clc.cyanBright(formatUptime(parseInt(uptime, 10)))));
+      }
 
       console.log(boxLine(w, ''));
 
