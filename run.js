@@ -543,7 +543,7 @@ function liveDashboard() {
   console.log(boxTop(w));
   console.log(boxLine(w, centerText(clc.cyanBright.bold('L I V E   D A S H B O R D'), w - 4)));
   console.log(boxSep(w));
-  console.log(boxLine(w, '  ' + clc.blackBright('Refreshing every 3s... Press any key to stop.')));
+  console.log(boxLine(w, '  ' + clc.blackBright('Refreshing every 3s... Press any key to Stop.')));
   console.log(boxBot(w));
   blank();
 
