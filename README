@@ -1,72 +1,158 @@
+<div align="center">
+
+```
+ ████████╗
+ ╚══██╔══╝
+    ██║
+    ██║
+    ╚═╝
+```
+
 # Tor Controller
 
-A terminal-based Tor connection manager for Windows. Start, stop, and monitor Tor from a single interactive menu.
+**A terminal-based Tor connection manager for Windows**
 
-## Requirements
+Start, stop, and monitor Tor from a single interactive menu.
 
-- **Node.js v14+** (bundled in `vendor/nodejs/`)
-- **Tor** (bundled in `vendor/tor-bundle/`)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#)
+[![Node](https://img.shields.io/badge/node-v14+-green.svg)](#)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#)
 
-### Download Links (if vendor files are missing)
+---
 
-| Component | URL |
-|-----------|-----|
-| Node.js v14.16.1 (win-x86) | https://nodejs.org/dist/v14.16.1/node-v14.16.1-win-x86.zip |
-| Tor 0.4.5.7 (win32) | https://www.torproject.org/dist/torbrowser/10.0.15/tor-win32-0.4.5.7.zip |
+</div>
 
-## Usage
+## Features
 
-**Interactive mode:**
+| Feature | Description |
+|---------|-------------|
+| **Start / Stop / Restart** | Full lifecycle control of the Tor process |
+| **New Identity** | Switch to a fresh circuit with a new exit IP |
+| **Exit IP Lookup** | Query your public exit IP through the SOCKS5 proxy |
+| **Circuit Path** | Visualize active circuits: Entry -> Hops -> Exit |
+| **Network Stats** | Uptime, bandwidth, traffic, and network status |
+| **Live Dashboard** | Auto-refreshing real-time stats (every 3s) |
+| **Graceful Shutdown** | Clean Tor termination on Ctrl+C or Q |
+
+## Quick Start
+
+### 1. Clone the repo
+
+```bash
+git clone git@github.com:Lexcoded3/Tor.git
+cd Tor
 ```
-run.bat
+
+### 2. Ensure vendor files exist
+
+The `vendor/` directory should contain:
+
 ```
-or
+vendor/
+  nodejs/         # Node.js v14.16.1 runtime
+    node.exe
+    node_modules/
+  tor-bundle/     # Tor 0.4.5.7 binary
+    tor.exe
+    *.dll
 ```
+
+If missing, download from:
+
+| Component | Download |
+|-----------|----------|
+| Node.js | https://nodejs.org/dist/v14.16.1/node-v14.16.1-win-x86.zip |
+| Tor | https://www.torproject.org/dist/torbrowser/10.0.15/tor-win32-0.4.5.7.zip |
+
+### 3. Run
+
+```bash
+# Double-click run.bat, or:
 vendor\nodejs\node.exe run.js
 ```
 
-**CLI mode:**
+## Menu
+
 ```
+  ╭──────────────────────────────────────────────────────────────────╮
+  │                       M A I N   M E N U                         │
+  ├──────────────────────────────────────────────────────────────────┤
+  │  [1]  Start TOR connection                                      │
+  │  [2]  Log connection info                                       │
+  │  [3]  Stop TOR connection                                       │
+  │  [4]  Debug TOR connection                                      │
+  │  [5]  New TOR identity                                          │
+  │  [6]  Restart TOR connection                                    │
+  │  [7]  Show exit IP                                              │
+  │  [8]  Show circuit path                                         │
+  │  [9]  Network stats                                             │
+  │  [0]  Live dashboard                                            │
+  ├──────────────────────────────────────────────────────────────────┤
+  │  Press a key (1-9, 0) or Q to quit                              │
+  ╰──────────────────────────────────────────────────────────────────╯
+```
+
+## CLI Mode
+
+Run commands directly without the interactive menu:
+
+```bash
 vendor\nodejs\node.exe run.js 1    # Start Tor
+vendor\nodejs\node.exe run.js 5    # New identity
 vendor\nodejs\node.exe run.js 7    # Show exit IP
+vendor\nodejs\node.exe run.js 9    # Network stats
+vendor\nodejs\node.exe run.js 0    # Live dashboard
 vendor\nodejs\node.exe run.js q    # Quit
-```
-
-## Menu Options
-
-| Key | Feature | Description |
-|-----|---------|-------------|
-| `1` | **Start TOR** | Launches the Tor process and connects to the network. Automatically fetches and displays your exit IP on successful connection. |
-| `2` | **Log Info** | Dumps Tor connection log information via the control port. Useful for debugging connection issues. |
-| `3` | **Stop TOR** | Gracefully shuts down the running Tor process. |
-| `4` | **Debug** | Enables Tor debug logging to see detailed network activity. |
-| `5` | **New Identity** | Requests a new Tor circuit, giving you a fresh exit IP and path through the network. |
-| `6` | **Restart** | Stops the current Tor instance and immediately starts a new one. |
-| `7` | **Exit IP** | Queries `api.ipify.org` through Tor's SOCKS5 proxy to display your current public exit IP address. |
-| `8` | **Circuit Path** | Displays all active Tor circuits with their relay path: Entry -> Hops -> Exit. Shows circuit ID, state, and purpose. |
-| `9` | **Network Stats** | Shows a dashboard with uptime, bandwidth rate/burst, total data transferred, network status, active circuits, and exit IP. |
-
-## Architecture
-
-```
-run.js          Main application (menu, actions, SOCKS5 proxy helper)
-torrc           Tor configuration (SocksPort 9050, ControlPort 9051)
-run.bat         Windows batch launcher
-vendor/
-  nodejs/       Bundled Node.js runtime
-  tor-bundle/   Bundled Tor binary + DLLs
 ```
 
 ## How It Works
 
-- **Tor process** is spawned as a child process and tracked in memory
-- **Control port** (9051) is used via the `tor-control` library to send signals (NEWNYM, HALT, DUMP, DEBUG) and query info (circuit-status, bandwidth, uptime)
-- **SOCKS5 proxy** (9050) is used to make HTTP requests through Tor for exit IP detection -- implemented using Node.js `net` module with no external dependencies
-- **Graceful shutdown** kills the Tor process on Ctrl+C or `Q` key
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   run.js    │────>│  tor.exe     │────>│  Tor Network│
+│  (Node.js)  │     │  (SOCKS:9050)│     │             │
+│             │<────│  (Ctrl:9051) │<────│             │
+└─────────────┘     └──────────────┘     └─────────────┘
+```
 
-## Notes
+- **Process Management** -- Tor is spawned as a child process and tracked in memory
+- **Control Protocol** -- Port 9051 via `tor-control` library for signals and queries
+- **SOCKS5 Proxy** -- Port 9050 for HTTP requests through Tor (exit IP detection)
+- **Zero Dependencies** -- Uses only Node.js built-in modules + vendored packages
 
-- Ports 9050 (SOCKS) and 9051 (Control) must be free before starting Tor
-- If Tor is already running from another application, stop it first or use option 3
-- The GeoIP path warnings on startup are non-fatal and can be ignored
-- Vendor binaries are excluded from git (see `.gitignore`)
+## Project Structure
+
+```
+Tor/
+  run.js           # Main application
+  run.bat          # Windows launcher
+  torrc            # Tor configuration
+  README.md        # This file
+  .gitignore       # Excludes vendor binaries
+  vendor/
+    nodejs/        # Bundled Node.js runtime
+    tor-bundle/    # Bundled Tor binary + DLLs
+```
+
+## Configuration
+
+Edit `torrc` to customize Tor behavior:
+
+```
+SocksPort 9050        # SOCKS proxy port
+ControlPort 9051      # Control port (for this tool)
+Log notice stdout     # Log level
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **Ports already in use** | Stop other Tor instances or change ports in `torrc` |
+| **GeoIP warnings** | Non-fatal, can be ignored |
+| **Batch file closes immediately** | Run from terminal to see error output |
+| **Connection timeout** | Check firewall, try restarting Tor |
+
+## License
+
+MIT
